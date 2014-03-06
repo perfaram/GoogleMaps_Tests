@@ -15,6 +15,7 @@
     <script>
 var map;
 var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+var stockholm = new google.maps.LatLng(59.327383, 18.06747);
 
 /**
  * The HomeControl adds a control to the map that simply
@@ -22,6 +23,15 @@ var chicago = new google.maps.LatLng(41.850033, -87.6500523);
  * the control DIV as an argument.
  * @constructor
  */
+
+//centrer sur pos actuelle
+//activer/désactiver trafic
+
+function showAlert() {
+  map.setZoom(6);
+  map.setCenter(stockholm)
+}
+
 function HomeControl(controlDiv, map) {
 
   // Set CSS styles for the DIV containing the control
@@ -30,31 +40,56 @@ function HomeControl(controlDiv, map) {
   controlDiv.style.padding = '5px';
 
   // Set CSS for the control border
-  var controlUI = document.createElement('div');
-  controlUI.style.backgroundColor = 'white';
-  controlUI.style.borderStyle = 'solid';
-  controlUI.style.borderWidth = '2px';
-  controlUI.style.cursor = 'pointer';
-  controlUI.style.textAlign = 'center';
-  controlUI.title = 'Click to set the map to Home';
-  controlDiv.appendChild(controlUI);
+  var golastUI = document.createElement('div');
+  golastUI.style.backgroundColor = 'Dernière localisation';
+  golastUI.style.borderStyle = 'solid';
+  golastUI.style.borderWidth = '1px';
+  golastUI.style.cursor = 'pointer';
+  golastUI.style.textAlign = 'center';
+  golastUI.title = 'Cliquer pour afficher la dernière localisation';
+  controlDiv.appendChild(golastUI);
 
   // Set CSS for the control interior
-  var controlText = document.createElement('div');
-  controlText.style.fontFamily = 'Arial,sans-serif';
-  controlText.style.fontSize = '12px';
-  controlText.style.paddingLeft = '4px';
-  controlText.style.paddingRight = '4px';
-  controlText.innerHTML = '<b>Home</b>';
-  controlUI.appendChild(controlText);
+  var golastText = document.createElement('div');
+  golastText.style.fontFamily = 'Arial,sans-serif';
+  golastText.style.fontSize = '12px';
+  golastText.style.paddingLeft = '4px';
+  golastText.style.paddingRight = '4px';
+  golastText.innerHTML = '<b>Dernière localisation</b>';
+  golastUI.appendChild(golastText);
+
+  // Set CSS for the control border
+  var goposUI = document.createElement('div');
+  goposUI.style.backgroundColor = 'Position actuelle';
+  goposUI.style.borderStyle = 'solid';
+  goposUI.style.borderWidth = '1px';
+  goposUI.style.cursor = 'pointer';
+  goposUI.style.textAlign = 'center';
+  goposUI.title = 'Cliquer pour afficher la position actuelle';
+  controlDiv.appendChild(goposUI);
+
+  // Set CSS for the control interior
+  var goposText = document.createElement('div');
+  goposText.style.fontFamily = 'Arial,sans-serif';
+  goposText.style.fontSize = '12px';
+  goposText.style.paddingLeft = '4px';
+  goposText.style.paddingRight = '4px';
+  goposText.innerHTML = '<b>Position actuelle</b>';
+  goposUI.appendChild(goposText);
 
   // Setup the click event listeners: simply set the map to
   // Chicago
-  google.maps.event.addDomListener(controlUI, 'click', function() {
+  google.maps.event.addDomListener(golastUI, 'click', function() {
     map.setCenter(chicago)
   });
 
-}
+//  google.maps.event.addDomListener(goposUI, 'click', function() {
+//    map.setCenter(stockholm)
+//	window.alert('DIV clicked');
+//  });
+  google.maps.event.addDomListener(goposUI, 'click', showAlert);
+
+};
 
 function initialize() {
   var mapDiv = document.getElementById('map-canvas');
@@ -80,6 +115,9 @@ function initialize() {
     center: new google.maps.LatLng(41.878113, -87.629798),
     radius: 8143197 / 20
   });
+
+  var trafficLayer = new google.maps.TrafficLayer();
+  trafficLayer.setMap(map);
 
   var contentString = '<div id="content">'+
       '<div id="siteNotice">'+
