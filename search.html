@@ -55,7 +55,6 @@
 }
 
     </style>
-    <title>Places search box</title>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
     <script>
 // This example adds a search box to a map, using the Google Place Autocomplete
@@ -147,6 +146,11 @@ function initialize() {
     },
   }
 */
+    var mapTypeIds = [];
+    for(var type in google.maps.MapTypeId) {
+        mapTypeIds.push(google.maps.MapTypeId[type]);
+    }
+    mapTypeIds.push("OSM");
   var mapOptions = {
     zoom: 6,
     center: chicago,
@@ -154,15 +158,29 @@ function initialize() {
 	scaleControl:true,
 	overviewMapControl:true,
     rotateControl:true,
+    mapTypeId: "OSM",
     mapTypeControlOptions: {
+      mapTypeIds: mapTypeIds,
       style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
     },
+    
     zoomControl: true/*,
     zoomControlOptions: {
       style: google.maps.ZoomControlStyle.SMALL
     }*/
   }
   map = new google.maps.Map(mapDiv, mapOptions);
+  
+	map.mapTypes.set("OSM", new google.maps.ImageMapType({
+	    getTileUrl: function(coord, zoom) {
+	        return "http://tile.openstreetmap.org/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+	    },
+	    tileSize: new google.maps.Size(256, 256),
+	    name: "OpenStreetMap",
+	    maxZoom: 18
+	}));
+  
+
 
   // Create the DIV to hold the control and
   // call the HomeControl() constructor passing
@@ -228,21 +246,20 @@ function initialize() {
   var infowindow = new google.maps.InfoWindow({
       content: contentString
   });
+  
+  var infowindowb = new google.maps.InfoWindow({
+      content: contentString
+  });
 
   google.maps.event.addListener(marker, 'click', function() {
     infowindow.open(map,marker);
   });
+  
+  google.maps.event.addListener(markerb, 'click', function() {
+    infowindowb.open(map,markerb);
+  });
 
   //google.maps.event.addListener(markerb, 'click', toggleBounce);
-
-  google.maps.event.addListener(markerb, 'click', function() {
-    //infowindow.open(map,markerb);
-  if (markerb.getAnimation() != null) {
-    markerb.setAnimation(null);
-  } else {
-    markerb.setAnimation(google.maps.Animation.BOUNCE);
-  };
-  });
 
   homeControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
